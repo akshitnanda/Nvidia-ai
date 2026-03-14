@@ -1,0 +1,106 @@
+defaults:
+  provider: nvidia
+  endpoint: serverless
+  temperature: 0.2
+  top_p: 0.95
+  max_tokens: 4096
+  timeout_seconds: 90
+
+models:
+  nvidia/nemotron-3-super-120b-a12b:
+    label: NVIDIA Nemotron 3 Super 120B A12B
+    provider: nvidia
+    endpoint: serverless
+    free_access: true
+    availability: api_catalog_trial
+    capabilities:
+      - planning
+      - reasoning
+      - coding
+      - tool_use
+      - long_context
+  mistralai/mistral-nemotron:
+    label: Mistral-Nemotron
+    provider: nvidia
+    endpoint: serverless
+    free_access: true
+    availability: api_catalog_trial
+    capabilities:
+      - coding
+      - instruction_following
+      - function_calling
+      - review
+  local/default-chat:
+    label: Local NVIDIA NIM Chat Model
+    provider: nvidia
+    endpoint: local_nim
+    free_access: false
+    availability: self_hosted
+    capabilities:
+      - planning
+      - coding
+      - review
+
+profiles:
+  planner:
+    primary: nvidia/nemotron-3-super-120b-a12b
+    fallbacks:
+      - mistralai/mistral-nemotron
+      - local/default-chat
+    temperature: 0.7
+    top_p: 0.95
+    max_tokens: 6000
+    timeout_seconds: 120
+  coder:
+    primary: mistralai/mistral-nemotron
+    fallbacks:
+      - nvidia/nemotron-3-super-120b-a12b
+      - local/default-chat
+    temperature: 0.2
+    top_p: 0.9
+    max_tokens: 8000
+    timeout_seconds: 120
+    extra_body:
+      chat_template_kwargs:
+        force_nonempty_content: true
+  reviewer:
+    primary: nvidia/nemotron-3-super-120b-a12b
+    fallbacks:
+      - mistralai/mistral-nemotron
+      - local/default-chat
+    temperature: 0.1
+    top_p: 0.9
+    max_tokens: 5000
+  tester:
+    primary: mistralai/mistral-nemotron
+    fallbacks:
+      - nvidia/nemotron-3-super-120b-a12b
+      - local/default-chat
+    temperature: 0.2
+    top_p: 0.9
+    max_tokens: 5000
+  docs:
+    primary: nvidia/nemotron-3-super-120b-a12b
+    fallbacks:
+      - mistralai/mistral-nemotron
+      - local/default-chat
+    temperature: 0.4
+    top_p: 0.95
+    max_tokens: 5000
+  release:
+    primary: nvidia/nemotron-3-super-120b-a12b
+    fallbacks:
+      - mistralai/mistral-nemotron
+      - local/default-chat
+    temperature: 0.2
+    top_p: 0.9
+    max_tokens: 4000
+  context:
+    primary: nvidia/nemotron-3-super-120b-a12b
+    fallbacks:
+      - mistralai/mistral-nemotron
+      - local/default-chat
+    temperature: 0.2
+    top_p: 0.9
+    max_tokens: 3000
+

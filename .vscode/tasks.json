@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Swarm: Analyze Repo",
+      "type": "shell",
+      "command": ".venv\\Scripts\\python -m app.cli.app analyze-repo"
+    },
+    {
+      "label": "Swarm: Plan Task",
+      "type": "shell",
+      "command": ".venv\\Scripts\\python -m app.cli.app plan \"${input:swarmTask}\""
+    },
+    {
+      "label": "Swarm: Review Diff",
+      "type": "shell",
+      "command": ".venv\\Scripts\\python -m app.cli.app review"
+    },
+    {
+      "label": "Swarm: Dashboard",
+      "type": "shell",
+      "command": ".venv\\Scripts\\python -m app.cli.app dashboard"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "swarmTask",
+      "type": "promptString",
+      "description": "Task for the local swarm"
+    }
+  ]
+}
+

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nvidia-local-swarm"
+version = "0.1.0"
+description = "Local-first multi-agent developer workflow using NVIDIA-hosted APIs and optional local NIM endpoints."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.116.0",
+  "httpx>=0.28.0",
+  "pydantic>=2.11.0",
+  "pydantic-settings>=2.8.0",
+  "pyyaml>=6.0.2",
+  "rich>=14.0.0",
+  "typer>=0.17.0",
+  "uvicorn>=0.35.0",
+  "watchfiles>=1.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.0",
+]
+
+[project.scripts]
+swarm = "app.cli.app:app"
+
+[tool.setuptools]
+packages = [
+  "app",
+  "app.agents",
+  "app.api",
+  "app.cli",
+  "app.memory",
+  "app.models",
+  "app.orchestrator",
+  "app.providers",
+  "app.tools",
+  "app.utils",
+  "app.workflows",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
