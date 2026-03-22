@@ -12,5 +12,4 @@ if (-not (Test-Path ".env")) {
     Copy-Item ".env.example" ".env"
 }
 
-Write-Host "Bootstrap complete. Set NVIDIA_API_KEY in .env before running swarm commands."
-
+Write-Host "Bootstrap complete. For a no-key walkthrough set NVIDIA_PROVIDER_MODE=demo, or set NVIDIA_API_KEY for live NVIDIA calls."

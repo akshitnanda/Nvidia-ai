@@ -4,6 +4,10 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 data/
+site/
+dist/
+build/
+release-assets/
 .env
 *.egg-info/
 *.pyc

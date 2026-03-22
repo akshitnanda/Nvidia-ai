@@ -18,8 +18,10 @@ app = typer.Typer(help="Local-first NVIDIA-only developer swarm.")
 console = Console()
 
 
-def build_orchestrator(root: Path) -> Orchestrator:
+def build_orchestrator(root: Path, provider_mode: str | None = None) -> Orchestrator:
     settings = get_settings()
+    if provider_mode:
+        settings = settings.model_copy(update={"nvidia_provider_mode": provider_mode})
     configure_logging(settings.swarm_log_level)
     return Orchestrator(root=root, settings=settings)
 
@@ -110,6 +112,30 @@ def dashboard(
     uvicorn.run(create_app(root), host=host, port=port)
 
 
+@app.command()
+def demo(
+    mode: WorkflowMode = typer.Option(WorkflowMode.ANALYZE, help="Workflow to run with deterministic local output."),
+    task: str = typer.Option(
+        "Show how this project works from a fresh GitHub checkout.",
+        help="Task used for plan or implement demos.",
+    ),
+    root: Path = typer.Option(Path("."), help="Workspace root."),
+    result_json: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
+) -> None:
+    orchestrator = build_orchestrator(root, provider_mode="demo")
+    if mode == WorkflowMode.ANALYZE:
+        result = orchestrator.analyze_repo()
+    elif mode == WorkflowMode.PLAN:
+        result = orchestrator.plan(task)
+    elif mode == WorkflowMode.IMPLEMENT:
+        result = orchestrator.implement(task, apply_changes=False, run_validation=False)
+    elif mode == WorkflowMode.RELEASE:
+        result = orchestrator.release()
+    else:
+        result = orchestrator.review()
+    emit_result(result_json, result)
+
+
 @app.command("watch-repo")
 def watch_repo(
     task: str = typer.Option("Summarize recent changes.", help="Task to run on change."),
@@ -134,4 +160,3 @@ def watch_repo(
 
 if __name__ == "__main__":
     app()
-

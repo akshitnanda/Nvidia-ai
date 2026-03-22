@@ -1,0 +1,29 @@
+site_name: NVIDIA Local Dev Swarm
+site_description: GitHub-ready docs for the NVIDIA Local Dev Swarm CLI, demo mode, and deployment workflows.
+site_url: ""
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: readthedocs
+
+nav:
+  - Overview: index.md
+  - Quickstart: quickstart.md
+  - Demo Guide: demo.md
+  - Architecture: architecture.md
+  - GitHub Ops: github.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - tables
+
+extra_css:
+  - stylesheets/extra.css

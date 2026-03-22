@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  --swarm-green: #76b900;
+  --swarm-deep: #11151f;
+}
+
+body,
+input {
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+code,
+pre,
+kbd {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+body {
+  color: #1a1f2b;
+}
+
+.wy-side-nav-search,
+.wy-nav-top {
+  background: linear-gradient(90deg, var(--swarm-deep), #1b2333 60%, #273148);
+}
+
+.wy-side-nav-search input[type="text"] {
+  border-radius: 999px;
+}
+
+a {
+  color: #2b5fc7;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
+}
+
+.rst-content code,
+.wy-menu code {
+  color: #182033;
+}
+
+.wy-menu-vertical a:hover,
+.wy-menu-vertical a:focus,
+.wy-menu-vertical li.current > a {
+  border-left-color: var(--swarm-green);
+}
+
+.wy-nav-content {
+  max-width: 980px;
+}

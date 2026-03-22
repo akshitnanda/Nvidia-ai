@@ -24,6 +24,9 @@ dependencies = [
 dev = [
   "pytest>=8.3.0",
 ]
+docs = [
+  "mkdocs>=1.6.0",
+]
 
 [project.scripts]
 swarm = "app.cli.app:app"
@@ -46,4 +49,3 @@ packages = [
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-
