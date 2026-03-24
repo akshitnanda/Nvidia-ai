@@ -34,6 +34,7 @@ mkdocs build --strict
 - explain the user-visible change
 - mention any risks or follow-ups
 - include screenshots or terminal output for UI/demo updates when helpful
+- update `wiki/` starter pages if the public workflow story changes substantially
 
 ## Scope
 
