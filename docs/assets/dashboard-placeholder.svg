@@ -1,0 +1,22 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F4F7FB"/>
+  <rect x="48" y="44" width="1184" height="632" rx="30" fill="#FFFFFF" stroke="#D7E1EE" stroke-width="2"/>
+  <rect x="48" y="44" width="1184" height="90" rx="30" fill="#111824"/>
+  <text x="96" y="99" fill="#FFFFFF" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="30">NVIDIA Local Swarm Dashboard</text>
+  <rect x="84" y="174" width="360" height="180" rx="24" fill="#F8FBF3" stroke="#D7E8B2"/>
+  <text x="116" y="224" fill="#76B900" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="22">Quick Start</text>
+  <text x="116" y="264" fill="#223046" font-family="'IBM Plex Mono', Consolas, monospace" font-size="18">swarm demo --mode plan</text>
+  <text x="116" y="296" fill="#223046" font-family="'IBM Plex Mono', Consolas, monospace" font-size="18">swarm dashboard</text>
+  <text x="116" y="330" fill="#68768E" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="18">Simple landing page, docs, and run browsing.</text>
+  <rect x="476" y="174" width="670" height="180" rx="24" fill="#F7F9FC" stroke="#D7E1EE"/>
+  <text x="508" y="224" fill="#223046" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="22">Recent Runs</text>
+  <rect x="508" y="248" width="606" height="34" rx="12" fill="#FFFFFF" stroke="#E2EAF4"/>
+  <text x="532" y="271" fill="#223046" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16">20260323-071328-ab12cd34</text>
+  <rect x="508" y="294" width="606" height="34" rx="12" fill="#FFFFFF" stroke="#E2EAF4"/>
+  <text x="532" y="317" fill="#223046" font-family="'IBM Plex Mono', Consolas, monospace" font-size="16">20260323-071511-ef56gh78</text>
+  <rect x="84" y="390" width="1062" height="224" rx="24" fill="#FCFDFE" stroke="#D7E1EE"/>
+  <text x="116" y="438" fill="#223046" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="22">Why this belongs on GitHub</text>
+  <text x="116" y="482" fill="#68768E" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">• Visitors can click straight from the README to live docs.</text>
+  <text x="116" y="518" fill="#68768E" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">• GitHub Actions shows CI, docs deployment, and tagged releases.</text>
+  <text x="116" y="554" fill="#68768E" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">• This card is a placeholder until you capture the real dashboard.</text>
+</svg>

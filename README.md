@@ -1,6 +1,29 @@
 # NVIDIA Local Dev Swarm
 
+[![CI](https://github.com/akshitnanda/Nvidia-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/akshitnanda/Nvidia-ai/actions/workflows/ci.yml)
+[![Docs](https://github.com/akshitnanda/Nvidia-ai/actions/workflows/pages.yml/badge.svg)](https://akshitnanda.github.io/Nvidia-ai/)
+[![Release](https://img.shields.io/github/v/release/akshitnanda/Nvidia-ai?display_name=tag)](https://github.com/akshitnanda/Nvidia-ai/releases)
+
 Local-first multi-agent developer workflow for Python repos, with NVIDIA-hosted inference for real runs and a scripted `demo` mode for GitHub walkthroughs.
+
+GitHub:
+
+- Repo: https://github.com/akshitnanda/Nvidia-ai
+- Docs: https://akshitnanda.github.io/Nvidia-ai/
+- Actions: https://github.com/akshitnanda/Nvidia-ai/actions
+- Releases: https://github.com/akshitnanda/Nvidia-ai/releases
+
+## Demo Preview
+
+Replace these with real screenshots or a short GIF later; for now they give the GitHub landing page a visual “what this is” section.
+
+### CLI Demo Slot
+
+![CLI demo placeholder](docs/assets/cli-demo-placeholder.svg)
+
+### Dashboard Slot
+
+![Dashboard placeholder](docs/assets/dashboard-placeholder.svg)
 
 ## Why This Repo Is Easier To Demo Now
 
@@ -89,7 +112,7 @@ swarm dashboard
 
 ## GitHub Pages Docs
 
-The repo now includes an Actions-based docs site powered by MkDocs Material.
+The repo now includes an Actions-based docs site powered by MkDocs.
 
 - source lives under `docs/`
 - config lives in `mkdocs.yml`
@@ -198,3 +221,4 @@ GitHub Actions mirrors the test run on:
 - This repo is Windows-friendly first, but the core CLI also works cross-platform.
 - Demo mode is intentionally scripted, so it is useful for onboarding and repo previews, not for judging model quality.
 - Live runs store artifacts and usage logs under `data/`.
+- The placeholder visuals in `docs/assets/` are meant to be replaced with a real CLI screenshot and dashboard capture when you are ready.

@@ -1,0 +1,35 @@
+name: Feature request
+description: Propose an improvement to the CLI, dashboard, docs, or workflows.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      placeholder: I want the project to...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      placeholder: A good improvement would be...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CLI
+        - Dashboard
+        - Docs
+        - Providers
+        - GitHub workflows
+        - Developer experience

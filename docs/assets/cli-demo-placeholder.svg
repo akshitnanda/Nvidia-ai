@@ -1,0 +1,24 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#0C111B"/>
+  <rect x="40" y="40" width="1200" height="640" rx="28" fill="#101827" stroke="#263145" stroke-width="2"/>
+  <rect x="72" y="76" width="1136" height="52" rx="16" fill="#182235"/>
+  <circle cx="108" cy="102" r="8" fill="#FF5F57"/>
+  <circle cx="136" cy="102" r="8" fill="#FEBC2E"/>
+  <circle cx="164" cy="102" r="8" fill="#28C840"/>
+  <text x="592" y="109" fill="#C8D2E3" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="22" text-anchor="middle">swarm demo --mode plan</text>
+  <rect x="72" y="156" width="1136" height="484" rx="20" fill="#0A0F18"/>
+  <text x="108" y="214" fill="#76B900" font-family="'IBM Plex Mono', Consolas, monospace" font-size="28">$ swarm demo --mode plan --task "Show how this repo works"</text>
+  <text x="108" y="272" fill="#E6EDF7" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="30">Plan generated.</text>
+  <text x="108" y="328" fill="#9CB0CA" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="24">1. Objective</text>
+  <text x="108" y="366" fill="#D9E2F0" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">Show a safe scripted walkthrough of the local swarm.</text>
+  <text x="108" y="418" fill="#9CB0CA" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="24">2. Recommended Steps</text>
+  <text x="132" y="456" fill="#D9E2F0" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">• Inspect the repo summary and recent git state.</text>
+  <text x="132" y="490" fill="#D9E2F0" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">• Generate a concise implementation plan.</text>
+  <text x="132" y="524" fill="#D9E2F0" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">• Preview a no-op implementation response for demos.</text>
+  <rect x="856" y="214" width="296" height="184" rx="20" fill="#121C2B" stroke="#29374F"/>
+  <text x="888" y="256" fill="#76B900" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="20">Why it matters</text>
+  <text x="888" y="296" fill="#D9E2F0" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="18">No API key needed</text>
+  <text x="888" y="328" fill="#D9E2F0" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="18">Preview-only implement flow</text>
+  <text x="888" y="360" fill="#D9E2F0" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="18">Run artifacts still saved locally</text>
+  <text x="108" y="604" fill="#8B9AB2" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="18">Placeholder graphic for the GitHub README. Replace with a real terminal screenshot or GIF when ready.</text>
+</svg>
