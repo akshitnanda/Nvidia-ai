@@ -12,7 +12,7 @@ def create_app(root: Path | None = None) -> FastAPI:
     root_path = (root or Path.cwd()).resolve()
     runs_dir = root_path / "data" / "runs"
 
-    app = FastAPI(title="NVIDIA Local Swarm Dashboard", version="0.1.0")
+    app = FastAPI(title="NVIDIA Local Swarm Dashboard", version="0.1.2")
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
