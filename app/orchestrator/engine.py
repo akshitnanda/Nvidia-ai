@@ -9,7 +9,7 @@ from app.memory.context import render_recent_memory
 from app.memory.store import MemoryStore
 from app.models.config import load_agents_config, load_models_config
 from app.models.runtime import AgentResult, ChangeSet, WorkflowMode, WorkflowResult
-from app.models.settings import Settings
+from app.models.settings import Settings, resolve_config_dir
 from app.orchestrator.approvals import ApprovalGate
 from app.providers.factory import ProviderRegistry
 from app.tools.filesystem import FileSystemTool
@@ -26,7 +26,7 @@ class Orchestrator:
     def __init__(self, root: Path, settings: Settings) -> None:
         self.root = root.resolve()
         self.settings = settings
-        self.config_dir = (self.root / settings.swarm_config_dir).resolve()
+        self.config_dir = resolve_config_dir(self.root, settings.swarm_config_dir)
         self.data_dir = (self.root / settings.swarm_data_dir).resolve()
         self.run_logger = RunLogger(self.data_dir)
         self.memory = MemoryStore(self.data_dir / "memory.sqlite3")

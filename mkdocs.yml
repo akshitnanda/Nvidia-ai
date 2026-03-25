@@ -3,6 +3,8 @@ site_description: GitHub-ready docs for the NVIDIA Local Dev Swarm CLI, demo mod
 site_url: ""
 docs_dir: docs
 site_dir: site
+exclude_docs: |
+  assets/README.md
 
 theme:
   name: readthedocs

@@ -40,7 +40,25 @@ class Settings(BaseSettings):
     swarm_max_focused_files: int = Field(default=8, alias="SWARM_MAX_FOCUSED_FILES")
 
 
+def packaged_config_dir() -> Path:
+    return (Path(__file__).resolve().parents[1] / "defaults" / "config").resolve()
+
+
+def resolve_config_dir(root: Path, configured_dir: Path) -> Path:
+    candidate = configured_dir if configured_dir.is_absolute() else root / configured_dir
+    candidate = candidate.resolve()
+    if candidate.exists():
+        return candidate
+
+    packaged = packaged_config_dir()
+    if packaged.exists():
+        return packaged
+
+    raise FileNotFoundError(
+        f"Could not find config directory at {candidate} and no packaged defaults were available."
+    )
+
+
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
-

@@ -1,0 +1,70 @@
+agents:
+  planner:
+    role: planner
+    goal: Break down developer tasks into safe, efficient execution plans.
+    model_profile: planner
+    system_prompt_file: prompts/planner.md
+    allowed_tools:
+      - repo.scan
+      - git.status
+      - memory.read
+    approval_required: false
+  coder:
+    role: coder
+    goal: Propose production-style source code changes as structured file updates.
+    model_profile: coder
+    system_prompt_file: prompts/coder.md
+    allowed_tools:
+      - repo.read
+      - fs.preview
+      - fs.write
+    approval_required: true
+  reviewer:
+    role: reviewer
+    goal: Review diffs for correctness, maintainability, and security risks.
+    model_profile: reviewer
+    system_prompt_file: prompts/reviewer.md
+    allowed_tools:
+      - git.diff
+      - repo.read
+      - memory.read
+    approval_required: false
+  tester:
+    role: tester
+    goal: Add or update tests and summarize execution failures.
+    model_profile: tester
+    system_prompt_file: prompts/tester.md
+    allowed_tools:
+      - repo.read
+      - fs.preview
+      - shell.test
+    approval_required: true
+  docs:
+    role: docs
+    goal: Keep README, docs, and implementation notes aligned with code changes.
+    model_profile: docs
+    system_prompt_file: prompts/docs.md
+    allowed_tools:
+      - repo.read
+      - fs.preview
+      - fs.write
+    approval_required: true
+  release:
+    role: release
+    goal: Produce clear changelogs, PR summaries, and release notes from git history or diffs.
+    model_profile: release
+    system_prompt_file: prompts/release.md
+    allowed_tools:
+      - git.log
+      - git.diff
+    approval_required: false
+  context:
+    role: context
+    goal: Maintain concise project memory on structure, standards, and recent decisions.
+    model_profile: context
+    system_prompt_file: prompts/context.md
+    allowed_tools:
+      - repo.scan
+      - memory.read
+      - memory.write
+    approval_required: false

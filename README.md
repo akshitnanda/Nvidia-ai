@@ -137,6 +137,7 @@ Published artifacts include:
 - source distribution
 - zipped docs site
 - `SHA256SUMS.txt`
+- packaged default config and prompts inside the wheel so the CLI still has a baseline config when installed outside this repo
 
 Automatic path:
 
@@ -222,3 +223,4 @@ GitHub Actions mirrors the test run on:
 - Demo mode is intentionally scripted, so it is useful for onboarding and repo previews, not for judging model quality.
 - Live runs store artifacts and usage logs under `data/`.
 - The placeholder visuals in `docs/assets/` are meant to be replaced with a real CLI screenshot and dashboard capture when you are ready.
+- Workspace-local `config/` still wins, but release artifacts now carry packaged fallback defaults for cleaner installs and demos.
