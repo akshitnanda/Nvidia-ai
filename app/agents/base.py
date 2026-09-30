@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import dataclass
 from typing import Any
 
@@ -19,6 +20,19 @@ class Agent:
     prompt_loader: PromptLoader
 
     def run(self, task: str, context: dict[str, Any]) -> AgentResult:
+        logger = self.provider_registry.run_logger
+        started = time.perf_counter()
+        logger.event(self.name, "running")
+        try:
+            result = self._complete(task, context)
+        except Exception as exc:
+            logger.event(self.name, "failed", error=str(exc), duration_seconds=round(time.perf_counter() - started, 3))
+            raise
+        logger.write_text(f"{self.name}-output.md", result.output)
+        logger.event(self.name, "succeeded", model=result.model, duration_seconds=round(time.perf_counter() - started, 3))
+        return result
+
+    def _complete(self, task: str, context: dict[str, Any]) -> AgentResult:
         profile = self.models_config.profiles[self.definition.model_profile]
         system_prompt = self.prompt_loader.load(self.definition.system_prompt_file)
         user_prompt = self._build_user_prompt(task=task, context=context)
