@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
         default="http://localhost:8000/v1",
         alias="NVIDIA_LOCAL_NIM_BASE_URL",
     )
-    nvidia_provider_mode: str = Field(default="serverless", alias="NVIDIA_PROVIDER_MODE")
+    nvidia_provider_mode: Literal["serverless", "local_nim", "demo"] = Field(default="serverless", alias="NVIDIA_PROVIDER_MODE")
     swarm_config_dir: Path = Field(default=Path("config"), alias="SWARM_CONFIG_DIR")
     swarm_data_dir: Path = Field(default=Path("data"), alias="SWARM_DATA_DIR")
     swarm_log_level: str = Field(default="INFO", alias="SWARM_LOG_LEVEL")

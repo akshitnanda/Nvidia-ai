@@ -82,4 +82,6 @@ class WorkflowResult(BaseModel):
     outputs: dict[str, str] = Field(default_factory=dict)
     changed_files: list[str] = Field(default_factory=list)
     command_results: list[CommandExecution] = Field(default_factory=list)
+    validation_status: Literal["not_run", "passed", "failed"] = "not_run"
+    suggested_commands: list[str] = Field(default_factory=list)
 

@@ -13,24 +13,15 @@ GitHub:
 - Actions: https://github.com/akshitnanda/Nvidia-ai/actions
 - Releases: https://github.com/akshitnanda/Nvidia-ai/releases
 
-## Demo Preview
+## Preview, Apply, Inspect
 
-Replace these with real screenshots or a short GIF later; for now they give the GitHub landing page a visual “what this is” section.
+- **Preview by default:** inspect a complete diff without writing proposed files or running validation commands.
+- **Explicit application:** `--apply` shows the diff and asks before writes; validation uses your configured test and lint commands. Model-suggested commands are saved for inspection, never executed automatically.
+- **Observable runs:** inspect status, agent events, usage, validation, and artifacts through `swarm runs` or the dashboard.
+- **Faster handoffs:** test and documentation agents run concurrently once the code proposal is ready.
+- **No-key demo:** `swarm demo` returns scripted local responses; demo token counts are estimates.
 
-### CLI Demo Slot
-
-![CLI demo placeholder](docs/assets/cli-demo-placeholder.svg)
-
-### Dashboard Slot
-
-![Dashboard placeholder](docs/assets/dashboard-placeholder.svg)
-
-## Why This Repo Is Easier To Demo Now
-
-- `swarm demo` runs without an API key and keeps the repo clean.
-- `scripts/demo.ps1` gives Windows users a one-command walkthrough.
-- The FastAPI dashboard now has a simple landing page at `/` instead of only raw JSON endpoints.
-- GitHub Actions runs CI, deploys a Pages docs site, and publishes release artifacts from version tags.
+See the [engineering assessment](docs/engineering-assessment.md) for the fixes, verification, and remaining limitations.
 
 ## Fastest First Run
 
@@ -99,10 +90,13 @@ swarm release --since HEAD~5
 
 The optional FastAPI dashboard exposes:
 
-- `/` for a lightweight browser-friendly landing page
+- `/` for searchable runs and an artifact viewer, with status and token usage
 - `/docs` for the Swagger UI
 - `/health` for a simple health check
 - `/runs` and `/runs/{run_id}` for local run artifacts
+- `/runs?details=true&limit=50&offset=0` for paginated run summaries
+
+The dashboard honors `SWARM_DATA_DIR`, handles incomplete artifacts, and serves artifacts as text. It is a read-only local viewer; start workflows from the CLI.
 
 Start it with:
 
@@ -163,6 +157,8 @@ swarm release --since HEAD~5
 swarm watch-repo --mode review
 swarm dashboard
 swarm demo --mode plan
+swarm runs
+swarm runs <run-id> --json
 ```
 
 ## Architecture At A Glance
@@ -222,5 +218,13 @@ GitHub Actions mirrors the test run on:
 - This repo is Windows-friendly first, but the core CLI also works cross-platform.
 - Demo mode is intentionally scripted, so it is useful for onboarding and repo previews, not for judging model quality.
 - Live runs store artifacts and usage logs under `data/`.
-- The placeholder visuals in `docs/assets/` are meant to be replaced with a real CLI screenshot and dashboard capture when you are ready.
 - Workspace-local `config/` still wins, but release artifacts now carry packaged fallback defaults for cleaner installs and demos.
+
+## Execution Rules
+
+- Validation runs only after approved file changes are applied. `validation_status` distinguishes `not_run`, `passed`, and `failed`; a failed validation sets `success=false` and a nonzero CLI exit code.
+- Configure `SWARM_DEFAULT_TEST_COMMAND` and `SWARM_DEFAULT_LINT_COMMAND` locally. Review generated code before applying: these commands run on your host, not in a sandbox.
+- Automatic commits require completed, passing validation and a completed review call. They stage only the workflow's changed files and refuse to proceed when the index already contains staged changes. Review output remains advisory.
+- Repository snapshots respect Git ignore rules, skip common secret paths and external symlinks, and tolerate binary files. Git diffs filter common secret paths too. These filters do not detect credentials embedded in ordinary source files or existing memory.
+- Conflicting proposals, workspace escapes, `.git` edits, secret-like paths, missing content, and oversized files are rejected during preflight. File application is not a multi-file transaction; existing files receive uniquely named `.bak` backups.
+- Watch mode excludes generated run data, caches, backups, and common secret paths to avoid retriggering itself.
