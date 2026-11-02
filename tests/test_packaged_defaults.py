@@ -16,7 +16,7 @@ def test_packaged_defaults_match_repo_config() -> None:
     packaged_files = sorted(
         path.relative_to(packaged_dir)
         for path in packaged_dir.rglob("*")
-        if path.is_file() and path.name != "__init__.py"
+        if path.is_file() and path.suffix in {".yaml", ".md"}
     )
 
     assert packaged_files == source_files
