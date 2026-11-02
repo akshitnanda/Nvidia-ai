@@ -30,8 +30,8 @@ The current setup fixes that by making the safest path also the shortest path.
 
 ## Repo Highlights
 
-- Typer CLI for `analyze-repo`, `plan`, `implement`, `review`, `release`, `watch-repo`, `dashboard`, and `demo`
-- FastAPI dashboard with a browser-friendly landing page plus run-artifact endpoints
+- Typer CLI for `analyze-repo`, `plan`, `implement`, `review`, `release`, `watch-repo`, `dashboard`, `runs`, and `demo`
+- FastAPI dashboard with searchable runs, status, usage, and a text artifact viewer
 - config-driven agent/model routing under `config/`
 - SQLite-backed memory and local run artifacts under `data/`
 - GitHub Actions for CI, Pages deployment, and release packaging

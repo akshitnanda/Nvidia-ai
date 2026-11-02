@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import sys
 
 from app.utils.patches import PreviewChange
 
@@ -17,8 +18,10 @@ class ApprovalGate:
             return True
         if not self.interactive:
             return False
-        response = input(
+        print(
             f"Apply {len(previews)} proposed file change(s)"
-            f"{' with risk flags' if risky else ''}? [y/N]: "
-        ).strip().lower()
+            f"{' with risk flags' if risky else ''}? [y/N]: ",
+            file=sys.stderr, end="", flush=True,
+        )
+        response = input("").strip().lower()
         return response in {"y", "yes"}
