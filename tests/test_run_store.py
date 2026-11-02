@@ -47,6 +47,17 @@ def test_run_listing_pagination(tmp_path: Path) -> None:
     assert [row["run_id"] for row in RunStore(tmp_path).list(limit=1, offset=1)] == ["b"]
 
 
+def test_dashboard_assets_and_escaped_storage_path(tmp_path: Path) -> None:
+    client = TestClient(create_app(tmp_path, Settings(_env_file=None, swarm_data_dir=Path("<script>"))))
+    page = client.get("/")
+    assert "&lt;script&gt;" in page.text
+    assert 'id="overview-tab"' in page.text
+    assert client.get("/static/dashboard.css").status_code == 200
+    script = client.get("/static/dashboard.js")
+    assert script.status_code == 200
+    assert "textContent" in script.text
+
+
 def test_artifact_symlink_is_never_served(tmp_path: Path) -> None:
     directory = tmp_path / "runs" / "test-run"
     directory.mkdir(parents=True)

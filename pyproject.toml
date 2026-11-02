@@ -37,6 +37,7 @@ packages = [
   "app",
   "app.agents",
   "app.api",
+  "app.api.static",
   "app.cli",
   "app.defaults",
   "app.defaults.config",
@@ -52,6 +53,7 @@ packages = [
 
 [tool.setuptools.package-data]
 "app.defaults" = ["config/*.yaml", "config/*.md", "config/prompts/*.md"]
+"app.api.static" = ["*.html", "*.css", "*.js"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

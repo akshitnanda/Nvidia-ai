@@ -27,8 +27,17 @@ Assessment baseline: commit `4b0b086` (package version 0.1.2). This change focus
 
 ## Next investments
 
-1. **Isolated worktrees and transactional application.** Current writes are preflighted and backed up but can still partially apply on an I/O failure. Host validation executes project code. Add per-run worktrees and a controlled execution environment before unattended use.
-2. **Structured review decisions and repair loops.** Review is prose and advisory. Define a findings schema and an explicit blocking decision before automated revisions or quality-gated commits.
+### Implemented follow-up: isolated quality workflows
+
+- Optional retained Git worktrees keep generated edits off the source branch and index.
+- Structured reviewer decisions block commits on malformed output, requested changes, and critical/high findings.
+- Up to three explicit repair attempts consume command failures, cumulative applied diffs, and previous findings. Every repair is preflighted and approved; attempt evidence is retained.
+- Run control surfaces quality gates, findings, validation output, attempt history, workspace paths, and a live execution timeline.
+
+Regression coverage includes source/index preservation, review gating, exhausted repair budgets, fresh repair approval, cumulative review context, and failed-validation preservation. Live NVIDIA quality remains unverified. Worktrees do not sandbox commands, and host-mode application remains nontransactional. The investments below remain relevant beyond this first repair workflow.
+
+1. **Controlled execution and transactional application.** Optional worktrees now separate generated files from source edits. Commands still execute project code on the host. Add a controlled execution environment and transactional host writes before unattended use.
+2. **Evaluate and strengthen repair decisions.** Structured review and bounded repair now exist. Benchmark reviewer accuracy, repair convergence, context budgets, and failure recovery with live models before expanding autonomy.
 3. **Live model evaluation.** Benchmark representative repositories, grounded plans, compilable patches, and cost/latency using the actual configured NVIDIA models. Demo output cannot establish model quality.
 4. **Context budget and content redaction.** Path filtering reduces accidental disclosure, but credentials embedded in source, task text, prior memory, and arbitrary command output are not automatically scrubbed. Add explicit context previews and token budgeting.
 5. **Durable job recovery.** A hard-killed process may leave `running` state. Add heartbeats and resumable jobs before extending the read-only dashboard into a workflow launcher.

@@ -49,7 +49,9 @@ class RunLogger:
         if result is not None:
             self.write_json("result.json", result)
             self.manifest.update(status="succeeded" if result.success else "failed", summary=result.summary,
-                                 changed_files=result.changed_files, validation_status=result.validation_status)
+                                 changed_files=result.changed_files, validation_status=result.validation_status,
+                                 review_status=result.review_status, application_status=result.application_status,
+                                 attempt_count=len(result.attempts))
         else:
             self.manifest.update(status="failed", error=str(error), summary="Workflow failed; inspect run artifacts.")
         self.manifest["finished_at"] = datetime.now(timezone.utc).isoformat()

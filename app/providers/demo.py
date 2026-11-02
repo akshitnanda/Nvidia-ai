@@ -83,17 +83,13 @@ class DemoProvider:
         )
 
     def _review(self, task: str) -> str:
-        return (
-            "1. Findings\n"
-            "- No blocking issues were detected in demo mode.\n"
-            "- The workflow stayed read-only, which is the expected GitHub-demo behavior.\n\n"
-            "2. Residual Risks\n"
-            "- Demo output is scripted, so it should not be used to evaluate production model behavior.\n"
-            f"- Any live implementation for `{task}` still requires a configured NVIDIA endpoint.\n\n"
-            "3. Recommended Next Steps\n"
-            "- Switch `NVIDIA_PROVIDER_MODE` to `serverless` or `local_nim` for real model calls.\n"
-            "- Re-run the same command outside demo mode when you are ready to make actual changes.\n"
-        )
+        return json.dumps({
+            "verdict": "approve",
+            "summary": "Scripted demo review; live model behavior is not evaluated.",
+            "findings": [],
+            "residual_risks": ["Demo output is deterministic and cannot establish production correctness.",
+                               "Execution results must be checked independently in validation artifacts."],
+        }, indent=2)
 
     def _release(self, task: str) -> str:
         return (

@@ -1,5 +1,15 @@
 # Quickstart
 
+## Isolated coding with repair
+
+```powershell
+swarm implement "Add a health endpoint with tests" --isolated --apply --max-repairs 2
+```
+
+Start at the Git repository root. Runs use committed `HEAD`, retain a separate `swarm/<run-id>` worktree, and ask for approval before every application. Source checkout edits and secrets are not copied. Validation and structured review must approve before an optional automatic commit. Worktrees are not command sandboxes.
+
+Open `swarm dashboard` to inspect quality gates, repair attempts, findings, command output, and the live execution timeline. Use the Artifacts tab for full evidence. Custom reviewer prompts must follow the JSON schema in `config/prompts/reviewer.md`.
+
 ## Windows PowerShell
 
 ```powershell

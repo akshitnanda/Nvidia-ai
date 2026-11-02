@@ -19,9 +19,25 @@ GitHub:
 - **Explicit application:** `--apply` shows the diff and asks before writes; validation uses your configured test and lint commands. Model-suggested commands are saved for inspection, never executed automatically.
 - **Observable runs:** inspect status, agent events, usage, validation, and artifacts through `swarm runs` or the dashboard.
 - **Faster handoffs:** test and documentation agents run concurrently once the code proposal is ready.
+- **Isolated coding:** `--isolated` keeps generated edits and validation in a retained Git worktree on its own branch.
+- **Bounded repair:** `--max-repairs 2` feeds test failures and review findings back to the coder, with approval for every repair.
+- **Quality gates:** commits require passing configured validation and a valid structured review approval; malformed reviews block approval.
 - **No-key demo:** `swarm demo` returns scripted local responses; demo token counts are estimates.
 
 See the [engineering assessment](docs/engineering-assessment.md) for the fixes, verification, and remaining limitations.
+
+## Implement with evidence
+
+```powershell
+swarm implement "Add a health endpoint with tests" --isolated --apply --max-repairs 2
+swarm dashboard
+```
+
+Approve each proposed diff, then inspect validation, findings, attempts, and the execution timeline in **Run control**. The dashboard refreshes every five seconds while visible; turn off **Live updates** to inspect a fixed view. Artifacts remain available in a separate tab.
+
+Isolated runs start from committed `HEAD`. Existing staged edits, uncommitted files, `.env`, and the original branch stay in the source checkout. Install project dependencies in your chosen environment before running validation. Worktrees are retained under `SWARM_DATA_DIR/workspaces/`; the CLI prints the path and branch. Nothing is automatically merged back. A worktree separates files; validation still executes local code with your user permissions.
+
+Add `--commit-message "Add health endpoint"` to commit approved, validated files on the run branch. Repairs default to zero and are capped at three. Tests skipped with `--no-run-tests` prevent automatic commits.
 
 ## Fastest First Run
 

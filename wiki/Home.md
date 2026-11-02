@@ -5,6 +5,8 @@ NVIDIA Local Dev Swarm is a local-first multi-agent developer workflow for Pytho
 - live NVIDIA-backed inference for real runs
 - a deterministic `demo` mode for no-key walkthroughs
 - a lightweight FastAPI dashboard
+- optional isolated coding branches, structured review gates, and bounded repairs
+- Run control with quality evidence, attempt history, and live execution events
 - GitHub Actions for CI, docs deployment, and release packaging
 
 ## Start Here

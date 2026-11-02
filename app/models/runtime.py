@@ -74,6 +74,39 @@ class AgentResult(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+class ReviewFinding(BaseModel):
+    severity: Literal["critical", "high", "medium", "low", "info"]
+    title: str = Field(min_length=1)
+    detail: str = Field(min_length=1)
+    path: str | None = None
+    line: int | None = Field(default=None, ge=1)
+
+
+class ReviewReport(BaseModel):
+    verdict: Literal["approve", "request_changes"]
+    summary: str = Field(min_length=1)
+    findings: list[ReviewFinding]
+    residual_risks: list[str]
+
+    @property
+    def approved(self) -> bool:
+        return self.verdict == "approve" and not any(
+            finding.severity in {"critical", "high"} for finding in self.findings
+        )
+
+
+ReviewStatus = Literal["not_run", "approved", "changes_requested", "invalid"]
+
+
+class ImplementationAttempt(BaseModel):
+    number: int
+    changed_files: list[str]
+    validation_status: Literal["not_run", "passed", "failed"]
+    review_status: ReviewStatus
+    review: ReviewReport | None = None
+    command_results: list[CommandExecution] = Field(default_factory=list)
+
+
 class WorkflowResult(BaseModel):
     run_id: str
     mode: WorkflowMode
@@ -84,4 +117,10 @@ class WorkflowResult(BaseModel):
     command_results: list[CommandExecution] = Field(default_factory=list)
     validation_status: Literal["not_run", "passed", "failed"] = "not_run"
     suggested_commands: list[str] = Field(default_factory=list)
+    review_status: ReviewStatus = "not_run"
+    review: ReviewReport | None = None
+    attempts: list[ImplementationAttempt] = Field(default_factory=list)
+    application_status: Literal["not_requested", "declined", "applied", "no_changes"] = "not_requested"
+    workspace_path: str | None = None
+    workspace_branch: str | None = None
 

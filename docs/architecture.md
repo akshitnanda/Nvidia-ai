@@ -32,17 +32,21 @@ Local Orchestrator
 
 ### Dashboard
 
-`app/api/dashboard.py` exposes health, run listings, run detail payloads, and a lightweight landing page for browser demos.
+`app/api/dashboard.py` exposes health, run listings, run detail payloads, and the Run control dashboard. HTML, CSS, and JavaScript under `app/api/static/` ship inside the wheel. The browser renders all run content as text, including findings, command output, and artifacts.
 
 The run viewer uses `app/memory/runs.py` for bounded artifact reads and path validation. `/runs` preserves the original run-ID list; `?details=true` adds status, workflow, provider, and usage. Pagination uses `limit` and `offset`.
 
 ### Execution and evidence
 
-Implementation follows planner → coder → concurrent tester/docs → combined preflight → optional approved writes → configured validation → concurrent reviewer/context → optional scoped commit. Model-suggested shell commands are retained as advice. Preview and declined-approval paths do not execute them or run validation.
+Implementation follows planner → coder → concurrent tester/docs → combined preflight → optional approved writes → configured validation → structured review → optional bounded repairs → context update → optional scoped commit. Model-suggested shell commands are retained as advice. Preview and declined-approval paths do not execute them or run validation.
 
 Each workflow writes a `run.json` manifest and a `result.json` on completion. Caught exceptions persist a failed manifest; agent outputs are saved as they arrive. `events.jsonl` records agent start, completion, failure, model, and duration. Per-run `usage.jsonl` associates usage with the run, while the aggregate usage log remains available. Manifest writes use a temporary file followed by replacement so a dashboard refresh does not see partial JSON.
 
-Workflow success describes completion of orchestration and any executed validation; it is not an automated judgment of review prose. Validation is separately reported as `not_run`, `passed`, or `failed`. Interrupted processes that cannot run cleanup can leave a manifest marked `running`.
+Implementation/review success requires a valid structured review approval, with no critical/high findings, and no failed validation. Validation remains separately reported as `not_run`, `passed`, or `failed`; preview approval is not execution evidence. Review is a model judgment, not a correctness or security guarantee. Interrupted processes that cannot run cleanup can leave a manifest marked `running`.
+
+Each implementation attempt persists its changeset, diff, review output, structured result, and validation evidence. `attempts.json` records the sequence, and `applied-change.diff` preserves the cumulative applied diff. Repairs receive that cumulative diff and the earlier review. A no-op or declined repair retains earlier validation evidence. Commits require both passing validation and approved review.
+
+With `--isolated`, `app/tools/workspace.py` creates a retained Git worktree from committed `HEAD` on a run-specific branch. The child orchestrator shares the original run logger, memory store, and operator configuration, but file and shell tools target the worktree. Source edits and secrets are not copied, and the original branch/index stay in place. Isolation is a filesystem workflow boundary, not a command sandbox. Worktrees are never automatically merged or removed.
 
 ### Context and write boundaries
 

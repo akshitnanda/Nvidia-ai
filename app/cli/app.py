@@ -32,18 +32,21 @@ def emit_result(result_json: bool, result: WorkflowResult) -> None:
     if result_json:
         console.print_json(json.dumps(result.model_dump()))
     else:
-        console.print(result.summary)
+        console.print(result.summary, markup=False)
         for key, value in result.outputs.items():
             console.print(f"\n{key}\n{value}", markup=False)
         if result.changed_files:
-            console.print(f"\nChanged files: {', '.join(result.changed_files)}")
+            console.print(f"\nChanged files: {', '.join(result.changed_files)}", markup=False)
         if result.command_results:
             for command_result in result.command_results:
                 console.print(
-                    f"\n[bold]{command_result.command}[/bold] exit={command_result.exit_code}\n"
-                    f"{command_result.stdout or command_result.stderr}"
+                    f"\n{command_result.command} exit={command_result.exit_code}\n"
+                    f"{command_result.stdout or command_result.stderr}", markup=False,
                 )
         console.print(f"\nRun: {result.run_id} | Validation: {result.validation_status}")
+        console.print(f"Review: {result.review_status} | Application: {result.application_status} | Attempts: {len(result.attempts)}")
+        if result.workspace_path:
+            console.print(f"Workspace: {result.workspace_path}\nBranch: {result.workspace_branch}", markup=False)
         if result.suggested_commands:
             console.print("Model-suggested commands (not executed):", markup=False)
             for command in result.suggested_commands:
@@ -103,8 +106,12 @@ def implement(
     apply: bool = typer.Option(False, help="Apply file changes after preview/approval."),
     run_tests: bool = typer.Option(True, help="Run validation commands."),
     commit_message: str | None = typer.Option(None, help="Auto-commit message after applied changes."),
+    isolated: bool = typer.Option(False, help="Work in a retained Git worktree based on committed HEAD."),
+    max_repairs: int = typer.Option(0, min=0, max=3, help="Additional repair attempts; each requires file approval."),
     result_json: bool = typer.Option(False, "--json", help="Emit machine-readable JSON."),
 ) -> None:
+    if max_repairs and not apply:
+        raise typer.BadParameter("Repair attempts require --apply.", param_hint="--max-repairs")
     orchestrator = build_orchestrator(root)
     emit_result(
         result_json,
@@ -113,6 +120,8 @@ def implement(
             apply_changes=apply,
             run_validation=run_tests,
             commit_message=commit_message,
+            isolated=isolated,
+            max_repairs=max_repairs,
         ),
     )
 
