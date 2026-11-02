@@ -15,13 +15,14 @@ class DemoProvider:
         task = self._extract_task(request)
         content = self._render(agent_name, task)
         tokens = max(len(content.split()), 1)
+        prompt_tokens = max(sum(len(message.content.split()) for message in request.messages), 1)
         return CompletionResponse(
             model=self.model_name,
             content=content,
             usage=ProviderUsage(
-                prompt_tokens=max(sum(len(message.content.split()) for message in request.messages), 1),
+                prompt_tokens=prompt_tokens,
                 completion_tokens=tokens,
-                total_tokens=tokens,
+                total_tokens=prompt_tokens + tokens,
             ),
             raw_response={"mode": "demo", "agent": agent_name, "task": task},
         )
