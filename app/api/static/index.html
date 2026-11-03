@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NVIDIA Local Swarm · Run control</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/dashboard.css">
+  <script src="/static/dashboard.js" defer></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/" aria-label="NVIDIA Local Swarm home"><span class="brand-mark" aria-hidden="true">N</span><span>NVIDIA <span class="brand-sub">/ LOCAL SWARM</span></span></a><span class="local-tag"><i></i> Local workspace</span><a href="/docs">API reference ↗</a></header>
+  <main>
+    <section class="page-heading"><div><p class="eyebrow">WORKFLOW OPERATIONS</p><h1>Run control<span>.</span></h1><p>From proposal to proof. Inspect every attempt, review, and validation.</p></div><div class="actions"><label class="live-toggle"><input id="live" type="checkbox" checked> Live updates</label><button id="refresh" type="button">↻ Refresh</button></div></section>
+    <section class="metrics" aria-label="Loaded run metrics"><div><span>Runs loaded</span><strong id="run-count">—</strong><small>Latest 100 runs</small></div><div><span>In progress</span><strong id="active-count">—</strong><small>Reported running state</small></div><div><span>Need attention</span><strong id="failed-count">—</strong><small>Failed workflows</small></div><div><span>Model usage</span><strong id="token-count">—</strong><small>Tokens · demo usage estimated</small></div></section>
+    <section class="workspace">
+      <aside class="panel run-panel" aria-label="Run explorer"><div class="panel-heading"><h2>Run explorer</h2><span id="visible-count" class="count">0</span></div><label class="sr-only" for="search">Find a run</label><input id="search" type="search" placeholder="Search tasks, modes, IDs…"><label class="sr-only" for="status-filter">Filter by status</label><select id="status-filter"><option value="">All statuses</option><option value="running">Running</option><option value="failed">Failed</option><option value="succeeded">Succeeded</option><option value="unknown">Unknown / legacy</option></select><ul id="runs"><li class="empty">Loading runs…</li></ul><p id="refresh-status" class="refresh-status" role="status">Connecting to local artifacts…</p></aside>
+      <article class="panel detail-panel"><div id="empty-detail" class="empty-detail"><span class="empty-symbol" aria-hidden="true">↗</span><h2>Your workflow, with evidence.</h2><p>Select a run to see its quality gates, agent activity, and artifacts.</p><code>swarm demo --mode implement</code><p class="small">Start with a no-key walkthrough from your terminal.</p></div>
+        <div id="detail" hidden>
+          <div class="detail-heading"><div><p id="detail-id" class="eyebrow"></p><h2 id="detail-title">Run details</h2></div><span id="detail-badge" class="badge"></span></div><p id="detail-status" class="detail-meta" role="status"></p>
+          <div class="tabs" role="tablist" aria-label="Run details"><button id="overview-tab" role="tab" aria-selected="true" aria-controls="overview" type="button">Overview</button><button id="artifacts-tab" role="tab" aria-selected="false" aria-controls="artifact-panel" tabindex="-1" type="button">Artifacts <span id="artifact-count"></span></button></div>
+          <section id="overview" role="tabpanel" aria-labelledby="overview-tab">
+            <div class="gate-grid"><div class="gate"><span>VALIDATION</span><strong id="validation-state">Not recorded</strong></div><div class="gate"><span>REVIEW</span><strong id="review-state">Not recorded</strong></div><div class="gate"><span>ATTEMPTS</span><strong id="attempt-count">0</strong></div></div>
+            <div id="workspace-info" class="workspace-info" hidden><span class="eyebrow">ISOLATED WORKSPACE</span><strong id="workspace-branch"></strong><code id="workspace-path"></code><p>Generated changes stay on this branch until you choose to integrate them.</p></div>
+            <div id="attempt-section" hidden><div class="section-heading"><h3>Attempt history</h3><span>Initial proposal + bounded repairs</span></div><div id="attempts"></div></div>
+            <div class="section-heading"><h3>Review findings</h3><span id="finding-count"></span></div><div id="findings"></div>
+            <div class="section-heading"><h3>Validation commands</h3><span>Operator configured</span></div><div id="validation"></div>
+            <div class="section-heading"><h3>Execution timeline</h3><span id="event-count"></span></div><ol id="timeline"></ol>
+          </section>
+          <section id="artifact-panel" role="tabpanel" aria-labelledby="artifacts-tab" hidden><div class="artifact-toolbar"><label for="artifact-select">Artifact</label><select id="artifact-select"></select></div><p id="artifact-warning" class="small" role="status"></p><pre id="artifact-content" tabindex="0"></pre></section>
+        </div>
+      </article>
+    </section>
+    <footer><span>Read-only local observatory · Start workflows from the CLI.</span><span class="storage">__RUNS_PATH__</span></footer>
+  </main>
+</body>
+</html>
