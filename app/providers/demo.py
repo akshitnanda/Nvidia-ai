@@ -10,6 +10,10 @@ class DemoProvider:
 
     model_name = "demo/local-scripted"
 
+    def __init__(self, scenario: str = "standard") -> None:
+        self.scenario = scenario
+        self.coder_attempts = 0
+
     def complete(self, request: CompletionRequest) -> CompletionResponse:
         agent_name = str(request.metadata.get("agent") or request.profile_name)
         task = self._extract_task(request)
@@ -38,6 +42,11 @@ class DemoProvider:
         return "Explore the repository."
 
     def _render(self, agent_name: str, task: str) -> str:
+        if self.scenario == "repair_demo" and agent_name == "coder":
+            self.coder_attempts += 1
+            return json.dumps({"summary": "Scripted syntax repair demonstration.", "changes": [{
+                "path": "swarm_demo_example.py", "content": "demo_value =\n" if self.coder_attempts == 1 else "demo_value = 42\n",
+            }], "commands": []})
         if agent_name == "planner":
             return self._planner(task)
         if agent_name == "coder":

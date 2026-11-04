@@ -7,6 +7,7 @@ NVIDIA Local Dev Swarm is a local-first multi-agent developer workflow for Pytho
 - a lightweight FastAPI dashboard
 - optional isolated coding branches, structured review gates, and bounded repairs
 - Run control with quality evidence, attempt history, and live execution events
+- Mission control with a durable job queue, explicit approvals, cancellation, and bounded execution
 - GitHub Actions for CI, docs deployment, and release packaging
 
 ## Start Here

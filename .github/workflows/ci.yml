@@ -27,3 +27,17 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -q
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install package verification dependencies
+        run: python -m pip install -e .[dev] build
+      - name: Build wheel and source distribution
+        run: python -m build
+      - name: Verify packaged workflows and supervised repair
+        run: python scripts/smoke_wheel.py

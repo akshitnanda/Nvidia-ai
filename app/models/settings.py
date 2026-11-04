@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     swarm_auto_apply: bool = Field(default=False, alias="SWARM_AUTO_APPLY")
     swarm_max_file_bytes: int = Field(default=200_000, alias="SWARM_MAX_FILE_BYTES")
     swarm_max_focused_files: int = Field(default=8, alias="SWARM_MAX_FOCUSED_FILES")
+    swarm_max_context_bytes: int = Field(default=80_000, ge=2000, le=1_000_000, alias="SWARM_MAX_CONTEXT_BYTES")
+    swarm_job_concurrency: int = Field(default=2, ge=1, le=4, alias="SWARM_JOB_CONCURRENCY")
+    swarm_job_max_seconds: int = Field(default=1800, ge=10, le=3600, alias="SWARM_JOB_MAX_SECONDS")
+    swarm_job_max_calls: int = Field(default=48, ge=1, le=100, alias="SWARM_JOB_MAX_CALLS")
+    swarm_job_max_tokens: int = Field(default=500_000, ge=100, le=2_000_000, alias="SWARM_JOB_MAX_TOKENS")
+    swarm_demo_scenario: Literal["standard", "repair_demo"] = Field(default="standard", alias="SWARM_DEMO_SCENARIO")
 
 
 def packaged_config_dir() -> Path:
