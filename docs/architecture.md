@@ -34,6 +34,12 @@ Local Orchestrator
 
 `app/api/dashboard.py` exposes health, run listings, run detail payloads, and the Run control dashboard. HTML, CSS, and JavaScript under `app/api/static/` ship inside the wheel. The browser renders all run content as text, including findings, command output, and artifacts.
 
+### Managed execution
+
+The Mission control launcher submits validated `JobRequest` records to `app/memory/jobs.py`. `app/orchestrator/jobs.py` owns a workspace-bound SQLite queue under an OS file lock, maintains its heartbeat, and supervises one child process per workflow. The worker module shares the existing orchestrator, evidence, and isolated-worktree paths. `JobControl` supplies shared call/token limits, ownership checkpoints, and durable one-time approvals. Shutdown or recovery records interrupted runs; retries create new jobs rather than replaying partially completed writes.
+
+The local API requires a session token for writes, validates origin/host/client boundaries, and accepts fixed workflow options only. Managed implementations always use worktrees and explicit approvals. The [Mission control guide](mission-control.md) describes limits and the execution boundary.
+
 The run viewer uses `app/memory/runs.py` for bounded artifact reads and path validation. `/runs` preserves the original run-ID list; `?details=true` adds status, workflow, provider, and usage. Pagination uses `limit` and `offset`.
 
 ### Execution and evidence

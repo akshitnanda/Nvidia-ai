@@ -10,6 +10,8 @@ swarm dashboard
 
 Open `http://127.0.0.1:8787/` after the dashboard starts.
 
+The dashboard now includes **Mission control**: queue a demo plan, or load **Try the approval & repair demo** from a committed Git repository. Managed file application always uses an isolated branch and pauses for every diff approval. See [Mission control](mission-control.md) for execution limits, cancel/retry controls, and restart recovery.
+
 ## Cross-platform
 
 ```bash

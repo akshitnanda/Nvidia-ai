@@ -40,6 +40,10 @@ Regression coverage includes source/index preservation, review gating, exhausted
 2. **Evaluate and strengthen repair decisions.** Structured review and bounded repair now exist. Benchmark reviewer accuracy, repair convergence, context budgets, and failure recovery with live models before expanding autonomy.
 3. **Live model evaluation.** Benchmark representative repositories, grounded plans, compilable patches, and cost/latency using the actual configured NVIDIA models. Demo output cannot establish model quality.
 4. **Context budget and content redaction.** Path filtering reduces accidental disclosure, but credentials embedded in source, task text, prior memory, and arbitrary command output are not automatically scrubbed. Add explicit context previews and token budgeting.
-5. **Durable job recovery.** A hard-killed process may leave `running` state. Add heartbeats and resumable jobs before extending the read-only dashboard into a workflow launcher.
+5. **Checkpointed resumption.** Managed jobs now have a durable queue, heartbeats, cancellation, and interrupted-state recovery. Retries start fresh; resuming partially completed execution is intentionally not implemented.
 
-The dashboard remains a local read-only tool without authentication; remote multi-user hosting is outside this change.
+### Mission control follow-up
+
+Mission control adds a workspace-bound queue, a single supervisor lease, per-job child processes, one-time diff approvals, shared model-request limits, reported-token limits, runtime termination, bounded validation output, and explicit retries. The local API enforces session tokens, origin/host/client checks, and fixed workflow options. Regression tests exercise real worker processes, stale approval rejection, approval cancellation, source preservation, syntax repair, queue recovery, and descendant cleanup on command timeout.
+
+Desktop/mobile visual QA remains unverified because local browser use is disabled in Work settings. Live NVIDIA model quality and cancellation behavior remain unverified. Worktrees and process supervision are not a command sandbox; remote multi-user hosting is outside this change.
