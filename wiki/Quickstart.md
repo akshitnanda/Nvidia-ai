@@ -1,5 +1,9 @@
 # Quickstart
 
+## Mission control
+
+Run `swarm dashboard` to launch and monitor workflows. Start with a demo plan or the guided approval-and-repair scenario. The durable queue supports per-job limits, explicit diff approval, cancellation, and fresh retries after interruption. Managed file application uses isolated branches and never auto-commits. See `docs/mission-control.md` for configuration and recovery behavior.
+
 ## Isolated coding with repair
 
 ```powershell

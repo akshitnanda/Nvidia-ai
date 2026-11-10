@@ -26,7 +26,22 @@ GitHub:
 
 See the [engineering assessment](docs/engineering-assessment.md) for the fixes, verification, and remaining limitations.
 
-## Implement with evidence
+## Mission control
+
+Run `swarm dashboard` and open `http://127.0.0.1:8787/` to launch workflows, manage a durable queue, approve isolated changes, cancel active work, and retry interrupted jobs. Demo is selected by default. **Try the approval & repair demo** loads a guided scenario: approve a proposed file, observe a real Python syntax failure, then approve its scripted repair. It requires a Git repository with a commit and never calls NVIDIA.
+
+Set runtime, model-request, reported-token, and repair limits before queuing a job. Managed implementations always apply in retained worktrees and request approval for every diff. Browser jobs never auto-commit. A queue is bound to its workspace, survives restarts, and supports up to four configured concurrent jobs (default two). Active jobs interrupted by shutdown are retained for inspection; **Retry as new run** starts fresh.
+
+```powershell
+swarm submit "Plan health endpoint coverage" --mode plan --provider demo
+swarm jobs
+swarm jobs <job-id> --cancel
+swarm jobs <job-id> --retry
+```
+
+Start the dashboard to process queued CLI jobs. See [Mission control](docs/mission-control.md) for configuration, endpoints, recovery, and execution boundaries.
+
+## Implement from the CLI
 
 ```powershell
 swarm implement "Add a health endpoint with tests" --isolated --apply --max-repairs 2
@@ -107,12 +122,12 @@ swarm release --since HEAD~5
 The optional FastAPI dashboard exposes:
 
 - `/` for searchable runs and an artifact viewer, with status and token usage
-- `/docs` for the Swagger UI
+- `/docs` for the bundled local API reference
 - `/health` for a simple health check
 - `/runs` and `/runs/{run_id}` for local run artifacts
 - `/runs?details=true&limit=50&offset=0` for paginated run summaries
 
-The dashboard honors `SWARM_DATA_DIR`, handles incomplete artifacts, and serves artifacts as text. It is a read-only local viewer; start workflows from the CLI.
+The dashboard honors `SWARM_DATA_DIR`, handles incomplete artifacts, and serves artifacts as text. Local control endpoints use a per-server session token, origin checks, and loopback-only access. The server's workspace and configured validation commands are fixed; browser requests cannot provide filesystem roots, shell commands, or endpoint credentials.
 
 Start it with:
 

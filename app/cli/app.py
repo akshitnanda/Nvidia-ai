@@ -15,6 +15,9 @@ from app.orchestrator.engine import Orchestrator
 from app.utils.logging import configure_logging
 from app.tools.paths import excluded_path
 from app.memory.runs import RunStore
+from app.memory.jobs import JobStore
+from app.models.jobs import JobRequest
+from app.orchestrator.jobs import JobManager
 
 app = typer.Typer(help="Local-first NVIDIA-only developer swarm.")
 console = Console()
@@ -87,6 +90,54 @@ def runs(
         for row in payload:
             table.add_row(row["run_id"], row["mode"], row["status"], row.get("provider", "legacy"), str(row["total_tokens"]))
         console.print(table)
+
+
+@app.command()
+def submit(
+    task: str = typer.Argument(...),
+    root: Path = typer.Option(Path(".")),
+    mode: WorkflowMode = typer.Option(WorkflowMode.PLAN),
+    provider: str = typer.Option("demo", help="demo or configured"),
+    apply: bool = typer.Option(False, help="Apply in an isolated branch after dashboard approval."),
+    max_repairs: int = typer.Option(0, min=0, max=3),
+    max_seconds: int | None = typer.Option(None, min=10, max=3600),
+    max_model_calls: int | None = typer.Option(None, min=1, max=100),
+    max_total_tokens: int | None = typer.Option(None, min=100, max=2_000_000),
+) -> None:
+    """Queue a durable job; run swarm dashboard to process it."""
+    try:
+        settings = get_settings()
+        request = JobRequest(task=task, mode=mode, provider=provider, apply_changes=apply, max_repairs=max_repairs,
+                             max_seconds=max_seconds or min(900, settings.swarm_job_max_seconds),
+                             max_model_calls=max_model_calls or min(24, settings.swarm_job_max_calls),
+                             max_total_tokens=max_total_tokens or min(200_000, settings.swarm_job_max_tokens))
+        job = JobManager(root, settings).submit(request)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from None
+    console.print_json(json.dumps(job))
+
+
+@app.command()
+def jobs(
+    job_id: str | None = typer.Argument(None),
+    root: Path = typer.Option(Path(".")),
+    cancel: bool = typer.Option(False),
+    retry: bool = typer.Option(False),
+) -> None:
+    """Inspect, cancel, or retry durable jobs. Retries create a new run."""
+    if ((cancel or retry) and not job_id) or (cancel and retry):
+        raise typer.BadParameter("Choose one action and supply a job ID.")
+    try:
+        store = JobStore(root.resolve() / get_settings().swarm_data_dir, root.resolve())
+        if cancel:
+            payload = store.cancel(job_id)
+        elif retry:
+            payload = JobManager(root, get_settings()).retry(job_id)
+        else:
+            payload = store.get(job_id) if job_id else store.list()
+    except (FileNotFoundError, ValueError) as exc:
+        raise typer.BadParameter(str(exc)) from None
+    console.print_json(json.dumps(payload))
 
 
 @app.command()

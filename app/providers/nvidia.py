@@ -55,6 +55,7 @@ class NvidiaProvider:
         last_error: Exception | None = None
         with httpx.Client(timeout=request.timeout_seconds) as client:
             for attempt in range(1, 4):
+                self.run_logger.control.before_call()
                 started = time.perf_counter()
                 try:
                     response = client.post(url, headers=headers, json=payload)

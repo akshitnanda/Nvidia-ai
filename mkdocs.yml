@@ -13,6 +13,7 @@ nav:
   - Overview: index.md
   - Quickstart: quickstart.md
   - Demo Guide: demo.md
+  - Mission Control: mission-control.md
   - Architecture: architecture.md
   - Engineering Assessment: engineering-assessment.md
   - GitHub Ops: github.md

@@ -21,10 +21,12 @@ class Agent:
 
     def run(self, task: str, context: dict[str, Any]) -> AgentResult:
         logger = self.provider_registry.run_logger
+        logger.control.check()
         started = time.perf_counter()
         logger.event(self.name, "running")
         try:
             result = self._complete(task, context)
+            logger.control.check()
         except Exception as exc:
             logger.event(self.name, "failed", error=str(exc), duration_seconds=round(time.perf_counter() - started, 3))
             raise
@@ -55,6 +57,11 @@ class Agent:
         return AgentResult(agent=self.name, model=response.model, output=response.content)
 
     def _build_user_prompt(self, task: str, context: dict[str, Any]) -> str:
+        from app.memory.context import bounded_context
+        context, truncated = bounded_context(context, self.provider_registry.settings.swarm_max_context_bytes)
+        self.provider_registry.run_logger.write_json(f"{self.name}-context-budget.json", {
+            "truncated": truncated, "bytes": len(json.dumps(context, ensure_ascii=False).encode("utf-8")),
+        })
         return (
             f"Task:\n{task}\n\n"
             f"Agent Role:\n{self.definition.role}\n\n"

@@ -12,6 +12,7 @@ def tracked(mode: str) -> Callable:
             self.run_logger.start(mode, task, self.settings.nvidia_provider_mode)
             try:
                 result = method(self, *args, **kwargs)
+                self.run_logger.control.check()
             except BaseException as exc:
                 self.run_logger.finish(error=exc)
                 raise

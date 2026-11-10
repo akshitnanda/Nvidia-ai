@@ -15,11 +15,13 @@ class ProviderRegistry:
         self.settings = settings
         self.models_config = models_config
         self.run_logger = run_logger
-        self.demo = DemoProvider()
+        self.demo = DemoProvider(settings.swarm_demo_scenario)
         self.nvidia = NvidiaProvider(settings=settings, run_logger=run_logger)
 
     def complete(self, request: CompletionRequest) -> CompletionResponse:
+        self.run_logger.control.check()
         if self.settings.nvidia_provider_mode == "demo":
+            self.run_logger.control.before_call()
             response = self.demo.complete(request)
             self.run_logger.append_usage(
                 {

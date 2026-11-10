@@ -44,7 +44,8 @@ class Orchestrator:
         )
         self.fs = FileSystemTool(self.root, max_file_bytes=settings.swarm_max_file_bytes)
         self.git = GitTool(self.root)
-        self.repo = RepoScanner(self.root, max_file_bytes=settings.swarm_max_file_bytes, excluded_dirs=(self.data_dir,))
+        excluded_dirs = (self.data_dir,) if self.data_dir.is_relative_to(self.root) else ()
+        self.repo = RepoScanner(self.root, max_file_bytes=settings.swarm_max_file_bytes, excluded_dirs=excluded_dirs)
         self.shell = ShellTool(self.root)
         self.rules_text = (self.config_dir / "rules.md").read_text(encoding="utf-8")
 
@@ -78,13 +79,14 @@ class Orchestrator:
         self._preview_changes(changeset)
         changed_files: list[str] = []
         for change in changeset.changes:
+            self.run_logger.control.check()
             changed_files.append(str(self.fs.apply_change(change).relative_to(self.root).as_posix()))
         return changed_files
 
     @tracked("analyze")
-    def analyze_repo(self) -> WorkflowResult:
-        context = self._build_context("Analyze the current repository.", WorkflowMode.ANALYZE)
-        agent_result = self.agents.get("context").run("Analyze the current repository.", context)
+    def analyze_repo(self, task: str = "Analyze the current repository.") -> WorkflowResult:
+        context = self._build_context(task, WorkflowMode.ANALYZE)
+        agent_result = self.agents.get("context").run(task, context)
         self.memory.add_entry("context", "repo", agent_result.output[:2000], {"model": agent_result.model})
         self.run_logger.write_text("context.md", agent_result.output)
         return WorkflowResult(
@@ -186,7 +188,11 @@ class Orchestrator:
             applied: list[str] = []
             if apply_changes:
                 print(f"Attempt {number}\n{preview_text or 'No file changes proposed.'}", file=sys.stderr)
-                if previews and gate.should_apply(previews):
+                approval = getattr(self.run_logger.control, "approve", gate.should_apply)
+                if previews and approval(previews):
+                    refreshed = self._preview_changes(changeset)
+                    if [(p.path, p.diff) for p in refreshed] != [(p.path, p.diff) for p in previews]:
+                        raise ValueError("Files changed while awaiting approval; rerun to review a fresh diff.")
                     applied = self._apply_changes(changeset)
                     application_status = "applied"
                     changed_files = list(dict.fromkeys([*changed_files, *applied]))
@@ -263,6 +269,7 @@ class Orchestrator:
         self.memory.add_entry("context", "repo", context_result.output[:2000], {"task": task})
         commit_output = ""
         if commit_message and changed_files:
+            self.run_logger.control.check()
             if final.validation_status == "passed" and final.review_status == "approved" and application_status == "applied":
                 commit_output = self.git.commit(commit_message, changed_files)
             else:
@@ -293,11 +300,11 @@ class Orchestrator:
         )
 
     @tracked("review")
-    def review(self, staged: bool = False) -> WorkflowResult:
+    def review(self, staged: bool = False, task: str = "Review the current git diff.") -> WorkflowResult:
         diff_text = self.git.diff(staged=staged)
-        context = self._build_context("Review the current git diff.", WorkflowMode.REVIEW)
+        context = self._build_context(task, WorkflowMode.REVIEW)
         context["git_diff"] = diff_text
-        reviewer = self.agents.get("reviewer").run("Review the current git diff.", context)
+        reviewer = self.agents.get("reviewer").run(task, context)
         self.run_logger.write_text("review.md", reviewer.output)
         self.memory.add_entry("review", "diff", reviewer.output[:2000], {"staged": staged})
         report, review_status = self._review_report(reviewer)
@@ -312,8 +319,8 @@ class Orchestrator:
         )
 
     @tracked("release")
-    def release(self, since: str | None = None) -> WorkflowResult:
-        scope = f"Generate release notes for changes since {since}." if since else "Generate release notes for recent work."
+    def release(self, since: str | None = None, task: str | None = None) -> WorkflowResult:
+        scope = task or (f"Generate release notes for changes since {since}." if since else "Generate release notes for recent work.")
         context = self._build_context(scope, WorkflowMode.RELEASE)
         if since and self.git.is_repo():
             context["git_diff"] = self.git.diff(revision=since)

@@ -8,6 +8,7 @@ from pathlib import Path
 from threading import RLock
 from typing import Any
 from uuid import uuid4
+from app.orchestrator.control import RunControl
 
 
 def configure_logging(level: str) -> None:
@@ -32,6 +33,7 @@ class RunLogger:
         self.run_dir.mkdir(parents=True, exist_ok=True)
         self._lock = RLock()
         self.manifest: dict[str, Any] = {}
+        self.control = RunControl()
 
     def start(self, mode: str, task: str, provider: str) -> None:
         if self.manifest:
@@ -39,9 +41,12 @@ class RunLogger:
             self.run_id = f"{stamp}-{uuid4().hex[:8]}"
             self.run_dir = self.runs_dir / self.run_id
             self.run_dir.mkdir(parents=True, exist_ok=False)
+            if type(self.control) is RunControl:
+                self.control = RunControl(self.control.max_calls, self.control.max_tokens)
         self.manifest = {
             "run_id": self.run_id, "mode": mode, "task": task, "provider": provider,
             "status": "running", "started_at": datetime.now(timezone.utc).isoformat(),
+            "limits": {"model_requests": self.control.max_calls, "reported_tokens": self.control.max_tokens},
         }
         self.write_json("run.json", self.manifest)
 
@@ -53,7 +58,8 @@ class RunLogger:
                                  review_status=result.review_status, application_status=result.application_status,
                                  attempt_count=len(result.attempts))
         else:
-            self.manifest.update(status="failed", error=str(error), summary="Workflow failed; inspect run artifacts.")
+            self.manifest.update(status=getattr(error, "status", "failed"), error=str(error), summary="Workflow stopped; inspect run artifacts.")
+        self.manifest.update(model_requests=self.control.calls, reported_tokens=self.control.tokens)
         self.manifest["finished_at"] = datetime.now(timezone.utc).isoformat()
         self.write_json("run.json", self.manifest)
 
@@ -97,5 +103,6 @@ class RunLogger:
         entry = {**payload, "run_id": self.run_id, "at": datetime.now(timezone.utc).isoformat()}
         self._append(path, entry)
         self._append(self.run_dir / "usage.jsonl", entry)
+        self.control.record_tokens(int(payload.get("usage", {}).get("total_tokens", 0)))
         return path
 

@@ -1,7 +1,7 @@
 "use strict";
 const el = id => document.getElementById(id);
 let runs = [], selected = null, artifacts = {}, requestNumber = 0, loading = false;
-const labels = {not_run: "Not run", approved: "Approved", changes_requested: "Changes requested", invalid: "Invalid review", passed: "Passed", failed: "Failed", running: "Running", succeeded: "Succeeded", unknown: "Unknown"};
+const labels = {not_run: "Not run", approved: "Approved", changes_requested: "Changes requested", invalid: "Invalid review", passed: "Passed", failed: "Failed", running: "Running", succeeded: "Succeeded", unknown: "Unknown", queued: "Queued", awaiting_approval: "Awaiting approval", cancelling: "Stopping", cancelled: "Cancelled", interrupted: "Interrupted", budget_exceeded: "Limit reached"};
 const label = value => labels[value] || value || "Not recorded";
 function node(tag, text, className) {
   const item = document.createElement(tag);
@@ -59,7 +59,14 @@ function renderOverview(data) {
   attempts.forEach(attempt => {
     const row = node("div", undefined, "attempt"), statuses = node("div", undefined, "attempt-badges");
     statuses.append(badge(attempt.validation_status, "Tests: "), badge(attempt.review_status, "Review: "));
-    row.append(node("strong", `Attempt ${attempt.number}`), statuses); el("attempts").append(row);
+    row.append(node("strong", `Attempt ${attempt.number}`), statuses);
+    const artifactName = `attempt-${attempt.number}.json`;
+    if (Object.prototype.hasOwnProperty.call(data.artifacts, artifactName)) {
+      const inspect = node("button", "Inspect attempt"); inspect.type = "button";
+      inspect.addEventListener("click", () => {activateTab("artifacts"); el("artifact-select").value = artifactName; showArtifact();});
+      row.append(inspect);
+    }
+    el("attempts").append(row);
   });
   el("findings").replaceChildren();
   const findings = Array.isArray(review?.findings) ? review.findings : [];
@@ -151,8 +158,8 @@ async function loadRuns() {
     if (!response.ok) throw new Error("Unable to load runs. Check the local server.");
     runs = await response.json(); renderRuns();
     el("run-count").textContent = runs.length;
-    el("active-count").textContent = runs.filter(run => run.status === "running").length;
-    el("failed-count").textContent = runs.filter(run => run.status === "failed").length;
+    el("active-count").textContent = runs.filter(run => ["running", "awaiting_approval"].includes(run.status)).length;
+    el("failed-count").textContent = runs.filter(run => ["failed", "interrupted", "budget_exceeded"].includes(run.status)).length;
     el("token-count").textContent = runs.reduce((sum, run) => sum + (run.total_tokens || 0), 0).toLocaleString();
     el("refresh-status").textContent = `Updated ${new Date().toLocaleTimeString()} · ${el("live").checked ? "Live every 5s" : "Manual refresh"}`;
     if (selected && !document.activeElement?.closest("#overview")) await selectRun(selected, true);
